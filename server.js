@@ -106,9 +106,11 @@ app.post('/api/upload-bg', requireAdmin, (req, res) => {
   });
 });
 
+const serveStatic = express.static(ROOT, { dotfiles: 'allow' });
+
 app.use((req, res, next) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') return next();
-  express.static(ROOT, { dotfiles: 'allow' })(req, res, next);
+  serveStatic(req, res, next);
 });
 
 app.get('/', (req, res) => res.sendFile(SITE_FILE));
