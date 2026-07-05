@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dolce Vita — Yönetim Paneli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --navy:#17344a; --blue:#2a72a8; --pink:#d34a87; --bg:#e8f1f6; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Jost',sans-serif;color:var(--navy);background:var(--bg)}
+  h1,h2,h3{font-family:'Cormorant Garamond',serif;margin:0}
+  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(253,253,251,0.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(23,52,74,0.1)}
+  header .brand{font-style:italic;font-weight:700;font-size:22px}
+  header .brand small{display:block;font-style:normal;font-size:10px;letter-spacing:0.2em;color:var(--blue);font-weight:500}
+  button{cursor:pointer;font-family:inherit}
+  .btn{background:var(--pink);color:#fff;border:none;border-radius:999px;padding:10px 20px;font-size:13px;font-weight:500;letter-spacing:0.04em}
+  .btn:hover{background:#b93a72}
+  .btn.secondary{background:var(--blue)}
+  .btn.secondary:hover{background:#215d8a}
+  .btn.ghost{background:none;border:1px solid rgba(42,114,168,0.35);color:var(--blue)}
+  #login{max-width:360px;margin:14vh auto;background:#fff;border-radius:18px;padding:36px 32px;box-shadow:0 18px 44px rgba(23,52,74,0.16)}
+  #login h1{font-size:30px;margin-bottom:18px;text-align:center}
+  #login input{width:100%;padding:11px 14px;margin-bottom:12px;border:1px solid rgba(42,114,168,0.3);border-radius:10px;font-size:14px}
+  #login .btn{width:100%}
+  #login .err{color:var(--pink);font-size:13px;margin-bottom:10px;display:none}
+  #app{display:none;max-width:1100px;margin:0 auto;padding:24px}
+  .tabs{display:flex;gap:8px;margin-bottom:20px}
+  .tab-btn{background:#fff;border:1px solid rgba(42,114,168,0.25);color:var(--blue);border-radius:999px;padding:9px 18px;font-size:13px;font-weight:500}
+  .tab-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .panel{display:none}
+  .panel.active{display:block}
+  .card{background:#fff;border-radius:16px;padding:22px 24px;margin-bottom:18px;box-shadow:0 10px 28px rgba(23,52,74,0.08)}
+  .card h2{font-size:22px;margin-bottom:4px}
+  .card .num{font-size:11px;letter-spacing:0.2em;color:var(--pink);font-weight:500;margin-bottom:6px}
+  label{display:block;font-size:11.5px;letter-spacing:0.06em;font-weight:500;color:var(--blue);margin:12px 0 5px}
+  input[type=text], textarea{width:100%;padding:9px 12px;border:1px solid rgba(42,114,168,0.25);border-radius:8px;font-size:14px;color:var(--navy);font-family:inherit}
+  textarea{resize:vertical;min-height:56px}
+  .lang-toggle{display:flex;gap:6px;margin-bottom:16px}
+  .lang-btn{background:#fff;border:1px solid rgba(42,114,168,0.25);color:var(--blue);border-radius:8px;padding:6px 16px;font-size:12.5px;font-weight:500}
+  .lang-btn.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .lang-panel{display:none}
+  .lang-panel.active{display:block}
+  .item-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+  .save-bar{position:sticky;bottom:0;display:flex;align-items:center;gap:14px;background:rgba(253,253,251,0.94);backdrop-filter:blur(10px);padding:14px 0;margin-top:8px}
+  .save-msg{font-size:13px;color:var(--blue)}
+  .imgs-note{background:#fff;border-radius:14px;padding:16px 20px;font-size:13.5px;line-height:1.6;margin-bottom:16px;box-shadow:0 10px 28px rgba(23,52,74,0.08)}
+  iframe{width:100%;height:78vh;border:1px solid rgba(23,52,74,0.12);border-radius:14px;background:#fff}
+  .bg-upload{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .bg-upload img{width:160px;height:90px;object-fit:cover;border-radius:8px;border:1px solid rgba(23,52,74,0.15)}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1>Dolce Vita</h1>
+  <div class="err" id="loginErr">Kullanıcı adı veya şifre hatalı.</div>
+  <input type="text" id="loginUser" placeholder="Kullanıcı adı" autocomplete="username">
+  <input type="password" id="loginPass" placeholder="Şifre" autocomplete="current-password">
+  <button class="btn" id="loginBtn">Giriş yap</button>
+</div>
+
+<div id="app">
+  <header>
+    <div class="brand">Dolce Vita<small>YÖNETİM PANELİ</small></div>
+    <div style="display:flex;gap:10px">
+      <a class="btn ghost" href="/" target="_blank" style="text-decoration:none;display:inline-block">Siteyi görüntüle ↗</a>
+      <button class="btn secondary" id="logoutBtn">Çıkış</button>
+    </div>
+  </header>
+
+  <div style="padding:20px 24px 0">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="content">İçerik</button>
+      <button class="tab-btn" data-tab="images">Görseller</button>
+    </div>
+  </div>
+
+  <div id="app-body" style="padding:0 24px 40px">
+
+    <div class="panel active" id="panel-content">
+      <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="tr">Türkçe</button>
+      </div>
+
+      <div id="langWrap"></div>
+
+      <div class="save-bar">
+        <button class="btn" id="saveContentBtn">Değişiklikleri kaydet</button>
+        <span class="save-msg" id="contentSaveMsg"></span>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-images">
+      <div class="imgs-note">
+        Fotoğrafları değiştirmek için aşağıdaki canlı site önizlemesinde ilgili fotoğraf alanına tıklayıp yeni bir
+        görsel sürükleyip bırakın (veya tıklayıp dosyadan seçin). Değişiklikler otomatik olarak kaydedilir ve
+        siteye anında yansır.
+      </div>
+      <iframe src="/" title="Site önizleme"></iframe>
+
+      <div class="card" style="margin-top:18px">
+        <h2>Arkaplan panoraması</h2>
+        <p style="font-size:13px;color:#2c4a60">Sayfanın kaydırılan zemin görseli (assets/pano-wide.png). Bu görsel bir fotoğraf alanı değildir, ayrı yüklenir.</p>
+        <div class="bg-upload">
+          <img id="bgPreview" src="/assets/pano-wide.png" alt="Panorama">
+          <input type="file" id="bgFile" accept="image/png,image/jpeg,image/webp">
+          <button class="btn secondary" id="bgUploadBtn">Yükle</button>
+          <span class="save-msg" id="bgSaveMsg"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(() => {
+  let content = null;
+
+  function getPath(obj, p) {
+    return p.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+  }
+  function setPath(obj, p, v) {
+    const keys = p.split('.');
+    let o = obj;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const k = keys[i];
+      if (o[k] == null) o[k] = /^\d+$/.test(keys[i + 1]) ? [] : {};
+      o = o[k];
+    }
+    o[keys[keys.length - 1]] = v;
+  }
+
+  function field(labelText, path, opts) {
+    opts = opts || {};
+    const tag = opts.area ? 'textarea' : 'input';
+    const typeAttr = opts.area ? '' : 'type="text"';
+    const arrAttr = opts.array ? ` data-array="${opts.array}"` : '';
+    return `<label>${labelText}</label><${tag} ${typeAttr} data-path="${path}"${arrAttr}></${tag}>`;
+  }
+
+  function bungalowCard(lang, i, num) {
+    return `<div class="card">
+      <div class="num">BUNGALOV ${num}</div>
+      ${field('İsim', `bungalowsData.${lang}.${i}.name`)}
+      ${field('Açıklama', `bungalowsData.${lang}.${i}.desc`, { area: true })}
+      ${field('Etiketler (virgülle ayır)', `bungalowsData.${lang}.${i}.chips`, { array: 'csv' })}
+    </div>`;
+  }
+
+  function reviewCard(lang, i, num) {
+    return `<div class="card">
+      <div class="num">YORUM ${num}</div>
+      ${field('Misafir adı', `S.${lang}.rev.items.${i}.name`)}
+      ${field('Yorum metni', `S.${lang}.rev.items.${i}.text`, { area: true })}
+    </div>`;
+  }
+
+  function langForm(lang) {
+    return `
+    <div class="card">
+      <div class="num">01 · MENÜ</div>
+      <h2>Menü Etiketleri</h2>
+      <div class="item-grid">
+        ${field('Bungalovlar', `S.${lang}.nav.bungalows`)}
+        ${field('Havuz & Bahçe', `S.${lang}.nav.pool`)}
+        ${field('Kahvaltı', `S.${lang}.nav.dining`)}
+        ${field('Konum', `S.${lang}.nav.location`)}
+        ${field('Misafirler', `S.${lang}.nav.reviews`)}
+        ${field('Galeri', `S.${lang}.nav.gallery`)}
+        ${field('İletişim', `S.${lang}.nav.contact`)}
+        ${field('Rezervasyon butonu', `S.${lang}.nav.book`)}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="num">02 · GİRİŞ (HERO)</div>
+      <h2>Karşılama Bölümü</h2>
+      ${field('Üst yazı (kicker)', `S.${lang}.hero.kicker`)}
+      ${field('Alt başlık', `S.${lang}.hero.subTitle`)}
+      ${field('Açıklama', `S.${lang}.hero.sub`, { area: true })}
+      ${field('Kaydırma ipucu', `S.${lang}.hero.hint`)}
+    </div>
+
+    <div class="card">
+      <div class="num">03 · BUNGALOVLAR</div>
+      <h2>Bungalovlar Bölümü</h2>
+      ${field('Başlık', `S.${lang}.bung.title`)}
+      ${field('Açıklama', `S.${lang}.bung.sub`, { area: true })}
+      ${field('Buton yazısı', `S.${lang}.bung.cta`)}
+    </div>
+    ${bungalowCard(lang, 0, 1)}
+    ${bungalowCard(lang, 1, 2)}
+    ${bungalowCard(lang, 2, 3)}
+
+    <div class="card">
+      <div class="num">04 · HAVUZ & BAHÇE</div>
+      <h2>Havuz & Bahçe Bölümü</h2>
+      ${field('Başlık', `S.${lang}.pool.title`)}
+      ${field('Metin', `S.${lang}.pool.body`, { area: true })}
+      ${field('Maddeler (her satıra bir tane)', `S.${lang}.pool.points`, { area: true, array: 'lines' })}
+    </div>
+
+    <div class="card">
+      <div class="num">05 · KAHVALTI</div>
+      <h2>Kahvaltı & Mutfak Bölümü</h2>
+      ${field('Başlık', `S.${lang}.dining.title`)}
+      ${field('Metin', `S.${lang}.dining.body`, { area: true })}
+      ${field('Alıntı', `S.${lang}.dining.quote`)}
+    </div>
+
+    <div class="card">
+      <div class="num">06 · KONUM</div>
+      <h2>Konum Bölümü</h2>
+      ${field('Başlık', `S.${lang}.loc.title`)}
+      ${field('Adres', `S.${lang}.loc.address`)}
+      ${field('Maddeler (her satıra bir tane)', `S.${lang}.loc.points`, { area: true, array: 'lines' })}
+      ${field('Harita buton yazısı', `S.${lang}.loc.mapBtn`)}
+    </div>
+
+    <div class="card">
+      <div class="num">07 · MİSAFİR YORUMLARI</div>
+      <h2>Yorumlar Bölümü</h2>
+      ${field('Başlık', `S.${lang}.rev.title`)}
+      ${field('Not', `S.${lang}.rev.note`, { area: true })}
+    </div>
+    ${reviewCard(lang, 0, 1)}
+    ${reviewCard(lang, 1, 2)}
+    ${reviewCard(lang, 2, 3)}
+
+    <div class="card">
+      <div class="num">08 · GALERİ</div>
+      <h2>Galeri Bölümü</h2>
+      ${field('Başlık', `S.${lang}.gal.title`)}
+      ${field('Alt yazı', `S.${lang}.gal.sub`, { area: true })}
+    </div>
+
+    <div class="card">
+      <div class="num">09 · REZERVASYON</div>
+      <h2>Rezervasyon Bölümü</h2>
+      ${field('Başlık', `S.${lang}.book.title`)}
+      ${field('Not', `S.${lang}.book.note`, { area: true })}
+      <div class="item-grid">
+        ${field('Giriş etiketi', `S.${lang}.book.checkIn`)}
+        ${field('Çıkış etiketi', `S.${lang}.book.checkOut`)}
+        ${field('Kişi etiketi', `S.${lang}.book.guests`)}
+        ${field('WhatsApp buton yazısı', `S.${lang}.book.wa`)}
+        ${field('E-posta buton yazısı', `S.${lang}.book.mail`)}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="num">10 · İLETİŞİM</div>
+      <h2>Alt Bilgi</h2>
+      ${field('Telif hakkı yazısı', `S.${lang}.contact.rights`)}
+    </div>
+    `;
+  }
+
+  function renderForm() {
+    const wrap = document.getElementById('langWrap');
+    wrap.innerHTML =
+      `<div class="lang-panel active" data-lang="en">${langForm('en')}</div>` +
+      `<div class="lang-panel" data-lang="tr">${langForm('tr')}</div>`;
+    populateForm();
+  }
+
+  function populateForm() {
+    document.querySelectorAll('[data-path]').forEach((el) => {
+      const v = getPath(content, el.dataset.path);
+      if (v == null) return;
+      if (el.dataset.array === 'lines') el.value = Array.isArray(v) ? v.join('\n') : '';
+      else if (el.dataset.array === 'csv') el.value = Array.isArray(v) ? v.join(', ') : '';
+      else el.value = v;
+    });
+  }
+
+  function serializeForm() {
+    const next = JSON.parse(JSON.stringify(content));
+    document.querySelectorAll('[data-path]').forEach((el) => {
+      let v = el.value;
+      if (el.dataset.array === 'lines') v = v.split('\n').map((s) => s.trim()).filter(Boolean);
+      else if (el.dataset.array === 'csv') v = v.split(',').map((s) => s.trim()).filter(Boolean);
+      setPath(next, el.dataset.path, v);
+    });
+    return next;
+  }
+
+  async function loadContent() {
+    const res = await fetch('/content.json?t=' + Date.now());
+    content = await res.json();
+    renderForm();
+  }
+
+  document.getElementById('saveContentBtn').addEventListener('click', async () => {
+    const next = serializeForm();
+    const msg = document.getElementById('contentSaveMsg');
+    msg.textContent = 'Kaydediliyor…';
+    try {
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(next)
+      });
+      if (!res.ok) throw new Error();
+      content = next;
+      msg.textContent = 'Kaydedildi ✓';
+    } catch {
+      msg.textContent = 'Kaydedilemedi, tekrar deneyin.';
+    }
+    setTimeout(() => { msg.textContent = ''; }, 3000);
+  });
+
+  document.querySelectorAll('.lang-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.lang-btn').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.lang-panel').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`.lang-panel[data-lang="${btn.dataset.lang}"]`).classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  document.getElementById('bgUploadBtn').addEventListener('click', async () => {
+    const fileInput = document.getElementById('bgFile');
+    const msg = document.getElementById('bgSaveMsg');
+    if (!fileInput.files[0]) { msg.textContent = 'Önce bir dosya seçin.'; return; }
+    const fd = new FormData();
+    fd.append('file', fileInput.files[0]);
+    msg.textContent = 'Yükleniyor…';
+    try {
+      const res = await fetch('/api/upload-bg', { method: 'POST', credentials: 'same-origin', body: fd });
+      if (!res.ok) throw new Error();
+      msg.textContent = 'Yüklendi ✓';
+      document.getElementById('bgPreview').src = '/assets/pano-wide.png?t=' + Date.now();
+    } catch {
+      msg.textContent = 'Yüklenemedi, tekrar deneyin.';
+    }
+    setTimeout(() => { msg.textContent = ''; }, 3000);
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await fetch('/api/logout', { method: 'POST', credentials: 'same-origin' });
+    showLogin();
+  });
+
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  document.getElementById('loginPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+
+  async function doLogin() {
+    const username = document.getElementById('loginUser').value;
+    const password = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginErr');
+    err.style.display = 'none';
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (!res.ok) { err.style.display = 'block'; return; }
+      showApp();
+    } catch {
+      err.style.display = 'block';
+    }
+  }
+
+  function showLogin() {
+    document.getElementById('login').style.display = 'block';
+    document.getElementById('app').style.display = 'none';
+  }
+
+  async function showApp() {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    await loadContent();
+  }
+
+  (async () => {
+    const res = await fetch('/api/whoami', { credentials: 'same-origin' });
+    const data = await res.json();
+    if (data.authenticated) showApp(); else showLogin();
+  })();
+})();
+</script>
+</body>
+</html>

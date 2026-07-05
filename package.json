@@ -1,0 +1,14 @@
+{
+  "name": "dolcevita-bodrum-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dolce Vita Bodrum site + admin panel",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "multer": "^2.0.1"
+  }
+}

@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./vendor/react.production.min.js"></script>
+<script src="./vendor/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+<script src="./omelette-bridge.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#e8f1f6}
+@keyframes dvFall{0%{transform:translate3d(0,-10vh,0) rotate(0deg)}25%{transform:translate3d(4vw,20vh,0) rotate(110deg)}50%{transform:translate3d(-3vw,48vh,0) rotate(190deg)}75%{transform:translate3d(3vw,76vh,0) rotate(310deg)}100%{transform:translate3d(-2vw,112vh,0) rotate(420deg)}}
+@keyframes dvSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(4deg)}}
+@keyframes dvFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes dvHint{0%,100%{transform:translateX(0);opacity:.85}50%{transform:translateX(12px);opacity:1}}
+input,select,button{font-family:inherit}
+::selection{background:#d34a87;color:#fff}
+</style>
+</helmet>
+<div style="font-family:'Jost',sans-serif;color:#17344a">
+
+  <div style="position:fixed;inset:0;overflow:hidden">
+    <div ref="{{ bgRef }}" style="position:absolute;inset:0;background-image:url('assets/pano-wide.png');background-repeat:repeat-x;background-size:auto 100%;background-position:0 0;will-change:background-position"></div>
+    <div ref="{{ tintRef }}" style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(23,52,74,0.10) 0%, rgba(23,52,74,0) 35%, rgba(23,52,74,0.22) 100%);pointer-events:none"></div>
+
+    <div ref="{{ trackRef }}" style="position:absolute;top:0;left:0;height:100%;display:flex;align-items:stretch;will-change:transform">
+
+      <section data-screen-label="Hero" data-section="hero" ref="{{ regSection }}" style="flex:none;width:100vw;height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 6vw 60px;position:relative">
+        <div style="background:rgba(253,253,251,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:clamp(28px,5vw,56px) clamp(24px,6vw,72px);box-shadow:0 24px 60px rgba(23,52,74,0.18);max-width:760px;animation:dvFloat 7s ease-in-out infinite">
+          <div style="font-size:12px;letter-spacing:0.32em;font-weight:500;color:#2a72a8">{{ t.hero.kicker }}</div>
+          <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(44px,8vw,92px);line-height:1.02;margin:14px 0 10px;color:#17344a">Dolce Vita</h1>
+          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(18px,2.6vw,26px);color:#d34a87">{{ t.hero.subTitle }}</div>
+          <p style="font-size:clamp(14px,1.6vw,17px);font-weight:300;line-height:1.7;color:#2c4a60;max-width:520px;margin:18px auto 0">{{ t.hero.sub }}</p>
+        </div>
+        <div style="position:absolute;bottom:36px;left:0;right:0;display:flex;justify-content:center">
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(23,52,74,0.55);color:#fff;backdrop-filter:blur(6px);border-radius:999px;padding:10px 20px;font-size:13px;letter-spacing:0.06em;animation:dvHint 2.6s ease-in-out infinite">{{ t.hero.hint }} ⟶</div>
+        </div>
+      </section>
+
+      <section data-screen-label="Bungalows" data-section="bungalows" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(18px,2.5vw,32px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <div style="flex:none;max-width:300px">
+          <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">01</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4.5vw,58px);font-weight:600;margin:8px 0 12px;color:#fff;text-shadow:0 2px 18px rgba(23,52,74,0.5)">{{ t.bung.title }}</h2>
+          <p style="background:rgba(253,253,251,0.78);backdrop-filter:blur(8px);border-radius:14px;padding:14px 18px;font-size:14.5px;font-weight:300;line-height:1.65;color:#2c4a60;margin:0">{{ t.bung.sub }}</p>
+        </div>
+        <sc-for list="{{ bungalows }}" as="b" hint-placeholder-count="3">
+          <div style="flex:none;width:min(78vw,320px);background:rgba(253,253,251,0.86);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.65);border-radius:18px;overflow:hidden;box-shadow:0 18px 44px rgba(23,52,74,0.16);display:flex;flex-direction:column">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ b.slotId }}" placeholder="{{ b.placeholder }}" shape="rect" style="width:100%;height:180px;display:block" hint-size="100%,180px"></x-import>
+            <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px">
+              <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#17344a">{{ b.name }}</div>
+              <div style="font-size:13.5px;font-weight:300;line-height:1.6;color:#2c4a60">{{ b.desc }}</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ b.chips }}" as="c" hint-placeholder-count="3">
+                  <span style="font-size:11.5px;letter-spacing:0.04em;background:rgba(42,114,168,0.1);color:#2a72a8;border-radius:999px;padding:4px 10px">{{ c }}</span>
+                </sc-for>
+              </div>
+              <button onClick="{{ navClick }}" data-target="booking" style="margin-top:4px;align-self:flex-start;background:#d34a87;color:#fff;border:none;border-radius:999px;padding:10px 20px;font-size:13px;font-weight:500;letter-spacing:0.05em;cursor:pointer" style-hover="background:#b93a72">{{ t.bung.cta }}</button>
+            </div>
+          </div>
+        </sc-for>
+      </section>
+
+      <section data-screen-label="Pool &amp; Garden" data-section="pool" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="pool-hero" placeholder="Pool photo — drop here" shape="rounded" radius="20" style="width:min(80vw,560px);height:min(46dvh,420px);display:block;box-shadow:0 24px 56px rgba(23,52,74,0.25)" hint-size="560px,420px"></x-import>
+        <div style="flex:none;width:min(84vw,380px);max-height:calc(100dvh - 150px);overflow-y:auto;background:rgba(253,253,251,0.84);backdrop-filter:blur(10px);border-radius:18px;padding:clamp(18px,2.5vw,26px) clamp(18px,3vw,28px);box-shadow:0 18px 44px rgba(23,52,74,0.16)">
+          <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">02</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin:8px 0 10px;color:#17344a">{{ t.pool.title }}</h2>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.7;color:#2c4a60;margin:0 0 14px">{{ t.pool.body }}</p>
+          <sc-for list="{{ t.pool.points }}" as="p" hint-placeholder-count="4">
+            <div style="display:flex;align-items:baseline;gap:10px;font-size:13.5px;color:#2c4a60;padding:5px 0;border-top:1px solid rgba(42,114,168,0.12)"><span style="color:#6a8f5f;font-size:15px">✦</span><span style="flex:1;text-wrap:pretty">{{ p }}</span></div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section data-screen-label="Dining" data-section="dining" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <div style="flex:none;width:min(84vw,380px);max-height:calc(100dvh - 150px);overflow-y:auto;background:rgba(253,253,251,0.84);backdrop-filter:blur(10px);border-radius:18px;padding:clamp(18px,2.5vw,26px) clamp(18px,3vw,28px);box-shadow:0 18px 44px rgba(23,52,74,0.16)">
+          <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">03</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin:8px 0 10px;color:#17344a">{{ t.dining.title }}</h2>
+          <p style="font-size:14.5px;font-weight:300;line-height:1.7;color:#2c4a60;margin:0 0 14px">{{ t.dining.body }}</p>
+          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:#d34a87">{{ t.dining.quote }}</div>
+        </div>
+        <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="dining-hero" placeholder="Breakfast photo — drop here" shape="rounded" radius="20" style="width:min(80vw,520px);height:min(44dvh,400px);display:block;box-shadow:0 24px 56px rgba(23,52,74,0.25)" hint-size="520px,400px"></x-import>
+      </section>
+
+      <section data-screen-label="Location" data-section="location" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <div style="flex:none;width:min(84vw,400px);max-height:calc(100dvh - 150px);overflow-y:auto;background:rgba(253,253,251,0.84);backdrop-filter:blur(10px);border-radius:18px;padding:clamp(18px,2.5vw,26px) clamp(18px,3vw,28px);box-shadow:0 18px 44px rgba(23,52,74,0.16)">
+          <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">04</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin:8px 0 10px;color:#17344a">{{ t.loc.title }}</h2>
+          <div style="font-size:14px;font-weight:400;color:#17344a;margin-bottom:14px">📍 {{ t.loc.address }}</div>
+          <sc-for list="{{ t.loc.points }}" as="p" hint-placeholder-count="4">
+            <div style="display:flex;align-items:baseline;gap:10px;font-size:13.5px;font-weight:300;line-height:1.55;color:#2c4a60;padding:6px 0;border-top:1px solid rgba(42,114,168,0.12)"><span style="color:#2a72a8">→</span><span style="flex:1;text-wrap:pretty">{{ p }}</span></div>
+          </sc-for>
+          <a href="https://www.google.com/maps/search/Dolce+Vita+Luxury+Bungalows+Bitez+Bodrum" target="_blank" style="display:inline-block;margin-top:14px;background:#2a72a8;color:#fff;text-decoration:none;border-radius:999px;padding:10px 20px;font-size:13px;font-weight:500;letter-spacing:0.05em" style-hover="background:#215d8a">{{ t.loc.mapBtn }}</a>
+        </div>
+        <div style="flex:none;width:min(80vw,460px);height:min(42dvh,380px);border-radius:20px;overflow:hidden;box-shadow:0 24px 56px rgba(23,52,74,0.25);border:1px solid rgba(255,255,255,0.6)">
+          <iframe src="https://www.google.com/maps?q=Dolce+Vita+Luxury+Bungalows+Bitez+Bodrum&output=embed" style="width:100%;height:100%;border:none;display:block" loading="lazy" title="Map"></iframe>
+        </div>
+      </section>
+
+      <section data-screen-label="Reviews" data-section="reviews" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(18px,2.5vw,30px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <div style="flex:none;max-width:260px">
+          <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">05</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.2vw,54px);font-weight:600;margin:8px 0 10px;color:#fff;text-shadow:0 2px 18px rgba(23,52,74,0.5)">{{ t.rev.title }}</h2>
+          <div style="background:rgba(253,253,251,0.7);border-radius:10px;padding:8px 12px;font-size:11.5px;color:#7a8a96;font-style:italic">{{ t.rev.note }}</div>
+        </div>
+        <sc-for list="{{ t.rev.items }}" as="r" hint-placeholder-count="3">
+          <div style="flex:none;width:min(78vw,300px);background:rgba(253,253,251,0.86);backdrop-filter:blur(10px);border-radius:18px;padding:24px 26px;box-shadow:0 18px 44px rgba(23,52,74,0.16);display:flex;flex-direction:column;gap:10px">
+            <div style="color:#e8a33d;font-size:15px;letter-spacing:2px">★★★★★</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.5;color:#17344a">“{{ r.text }}”</div>
+            <div style="font-size:12.5px;letter-spacing:0.08em;color:#2a72a8;font-weight:500">— {{ r.name }}</div>
+          </div>
+        </sc-for>
+      </section>
+
+      <section data-screen-label="Gallery" data-section="gallery" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(18px,2.5vw,32px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <div style="flex:none;max-width:240px">
+          <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">06</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.2vw,54px);font-weight:600;margin:8px 0 10px;color:#fff;text-shadow:0 2px 18px rgba(23,52,74,0.5)">{{ t.gal.title }}</h2>
+          <div style="background:rgba(253,253,251,0.7);border-radius:10px;padding:8px 12px;font-size:12px;color:#2c4a60">{{ t.gal.sub }}</div>
+        </div>
+        <div style="flex:none;display:grid;grid-template-columns:repeat(3, minmax(min(24vw,160px), 220px));grid-auto-rows:minmax(min(18vw,120px),160px);gap:clamp(8px,1.5vw,14px);max-width:82vw">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-1" placeholder="Photo 1" shape="rounded" radius="14" style="display:block;width:100%;height:100%;grid-row:span 2" hint-size="220px,320px"></x-import>
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-2" placeholder="Photo 2" shape="rounded" radius="14" style="display:block;width:100%;height:100%" hint-size="220px,160px"></x-import>
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-3" placeholder="Photo 3" shape="rounded" radius="14" style="display:block;width:100%;height:100%" hint-size="220px,160px"></x-import>
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-4" placeholder="Photo 4" shape="rounded" radius="14" style="display:block;width:100%;height:100%" hint-size="220px,160px"></x-import>
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-5" placeholder="Photo 5" shape="rounded" radius="14" style="display:block;width:100%;height:100%;grid-column:span 2" hint-size="454px,160px"></x-import>
+        </div>
+      </section>
+
+      <section data-screen-label="Booking" data-section="booking" ref="{{ regSection }}" style="flex:none;width:100vw;height:100dvh;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <div style="width:min(92vw,520px);max-height:calc(100dvh - 140px);overflow-y:auto;background:rgba(253,253,251,0.9);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.7);border-radius:22px;padding:clamp(20px,3vw,30px) clamp(20px,3.5vw,32px);box-shadow:0 24px 60px rgba(23,52,74,0.2)">
+          <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">07</div>
+          <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,46px);font-weight:600;margin:8px 0 6px;color:#17344a">{{ t.book.title }}</h2>
+          <p style="font-size:13.5px;font-weight:300;color:#2c4a60;margin:0 0 18px">{{ t.book.note }}</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;letter-spacing:0.1em;font-weight:500;color:#2a72a8">{{ t.book.checkIn }}
+              <input type="date" value="{{ checkIn }}" onChange="{{ onCheckIn }}" style="border:1px solid rgba(42,114,168,0.3);border-radius:10px;padding:10px 12px;font-size:14px;color:#17344a;background:#fff"></input>
+            </label>
+            <label style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;letter-spacing:0.1em;font-weight:500;color:#2a72a8">{{ t.book.checkOut }}
+              <input type="date" value="{{ checkOut }}" onChange="{{ onCheckOut }}" style="border:1px solid rgba(42,114,168,0.3);border-radius:10px;padding:10px 12px;font-size:14px;color:#17344a;background:#fff"></input>
+            </label>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px;font-size:11.5px;letter-spacing:0.1em;font-weight:500;color:#2a72a8;margin-top:12px">{{ t.book.guests }}
+            <select value="{{ guests }}" onChange="{{ onGuests }}" style="border:1px solid rgba(42,114,168,0.3);border-radius:10px;padding:10px 12px;font-size:14px;color:#17344a;background:#fff">
+              <sc-for list="{{ guestOptions }}" as="g" hint-placeholder-count="4"><option value="{{ g }}">{{ g }}</option></sc-for>
+            </select>
+          </label>
+          <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+            <button onClick="{{ openWa }}" style="flex:1;min-width:170px;display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;border:none;cursor:pointer;border-radius:999px;padding:13px 18px;font-size:14px;font-weight:500" style-hover="background:#1eb857">✆ {{ t.book.wa }}</button>
+            <button onClick="{{ openMail }}" style="flex:1;min-width:170px;display:flex;align-items:center;justify-content:center;gap:8px;background:#2a72a8;color:#fff;border:none;cursor:pointer;border-radius:999px;padding:13px 18px;font-size:14px;font-weight:500" style-hover="background:#215d8a">✉ {{ t.book.mail }}</button>
+          </div>
+        </div>
+      </section>
+
+      <section data-screen-label="Contact" data-section="contact" ref="{{ regSection }}" style="flex:none;width:100vw;height:100dvh;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+        <div style="text-align:center;background:rgba(23,52,74,0.72);backdrop-filter:blur(12px);border-radius:22px;padding:40px clamp(28px,6vw,64px);color:#fdfdfb;box-shadow:0 24px 60px rgba(23,52,74,0.3);max-width:560px">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.5vw,52px);font-weight:600;font-style:italic">Dolce Vita</div>
+          <div style="font-size:11px;letter-spacing:0.34em;color:#9fc3dd;margin:4px 0 22px">LUXURY BUNGALOWS · BODRUM</div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:15px;font-weight:300">
+            <a href="tel:+905451584848" style="color:#fdfdfb;text-decoration:none" style-hover="color:#f0a8c8">+90 545 158 48 48</a>
+            <a href="mailto:info@dolcevitabodrum.com" style="color:#fdfdfb;text-decoration:none" style-hover="color:#f0a8c8">info@dolcevitabodrum.com</a>
+            <div style="color:#c9dbe8;font-size:13.5px">{{ t.loc.address }}</div>
+          </div>
+          <button onClick="{{ navClick }}" data-target="booking" style="margin-top:24px;background:#d34a87;color:#fff;border:none;border-radius:999px;padding:13px 30px;font-size:14px;font-weight:500;letter-spacing:0.05em;cursor:pointer" style-hover="background:#b93a72">{{ t.nav.book }}</button>
+          <div style="margin-top:26px;font-size:11.5px;color:#8fb0c6">{{ t.contact.rights }}</div>
+        </div>
+      </section>
+
+    </div>
+
+    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden">
+      <sc-for list="{{ leaves }}" as="leaf" hint-placeholder-count="0">
+        <div style="position:absolute;top:-40px;left:{{ leaf.left }}vw;animation:dvFall {{ leaf.dur }}s linear infinite;animation-delay:{{ leaf.delay }}s;opacity:0.75">
+          <div style="width:{{ leaf.size }}px;height:{{ leaf.size }}px;background:linear-gradient(135deg, {{ leaf.c1 }}, {{ leaf.c2 }});border-radius:0 62% 4% 62%;transform:rotate(45deg)"></div>
+        </div>
+      </sc-for>
+      <div style="position:absolute;top:-30px;left:-36px;transform-origin:top left;animation:dvSway 6s ease-in-out infinite;display:flex;gap:-10px">
+        <div style="width:120px;height:60px;background:linear-gradient(135deg,#4c7345,#6a8f5f);border-radius:0 100% 0 100%;transform:rotate(28deg);opacity:0.92;box-shadow:0 8px 20px rgba(23,52,74,0.2)"></div>
+        <div style="width:90px;height:44px;background:linear-gradient(135deg,#5d824f,#83a86f);border-radius:0 100% 0 100%;transform:rotate(52deg);margin-left:-46px;margin-top:26px;opacity:0.9"></div>
+        <div style="width:66px;height:32px;background:linear-gradient(135deg,#42663c,#5d824f);border-radius:0 100% 0 100%;transform:rotate(74deg);margin-left:-30px;margin-top:56px;opacity:0.88"></div>
+      </div>
+      <div style="position:absolute;top:-26px;right:-40px;transform-origin:top right;animation:dvSway 7.5s ease-in-out infinite reverse;display:flex">
+        <div style="width:110px;height:54px;background:linear-gradient(225deg,#4c7345,#6a8f5f);border-radius:100% 0 100% 0;transform:rotate(-30deg);opacity:0.92;box-shadow:0 8px 20px rgba(23,52,74,0.2)"></div>
+        <div style="width:80px;height:40px;background:linear-gradient(225deg,#5d824f,#83a86f);border-radius:100% 0 100% 0;transform:rotate(-56deg);margin-left:-40px;margin-top:30px;opacity:0.9"></div>
+      </div>
+      <div style="position:absolute;bottom:-24px;right:8vw;transform-origin:bottom center;animation:dvSway 8s ease-in-out infinite;display:flex;align-items:flex-end">
+        <div style="width:96px;height:48px;background:linear-gradient(315deg,#d34a87,#e87fae);border-radius:100% 0 100% 0;transform:rotate(-18deg);opacity:0.85"></div>
+        <div style="width:64px;height:34px;background:linear-gradient(315deg,#b93a72,#d34a87);border-radius:100% 0 100% 0;transform:rotate(12deg);margin-left:-28px;margin-bottom:20px;opacity:0.85"></div>
+      </div>
+    </div>
+  </div>
+
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px clamp(16px,3vw,32px);background:rgba(253,253,251,0.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,0.5);box-shadow:0 2px 20px rgba(23,52,74,0.08)">
+    <button onClick="{{ navClick }}" data-target="hero" style="display:flex;flex-direction:column;align-items:flex-start;background:none;border:none;cursor:pointer;padding:0;text-align:left">
+      <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:22px;color:#17344a;line-height:1">Dolce Vita</span>
+      <span style="font-size:8.5px;letter-spacing:0.3em;color:#2a72a8;font-weight:500">LUXURY BUNGALOWS</span>
+    </button>
+    <sc-if value="{{ showLinks }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:clamp(10px,1.6vw,22px)">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+          <button onClick="{{ navClick }}" data-target="{{ n.id }}" style="background:none;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:12.5px;letter-spacing:0.08em;font-weight:400;color:#2c4a60;padding:6px 2px;white-space:nowrap" style-hover="color:#d34a87">{{ n.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:10px">
+      <button onClick="{{ toggleLang }}" style="background:none;border:1px solid rgba(42,114,168,0.35);border-radius:999px;padding:6px 12px;font-size:11.5px;letter-spacing:0.08em;font-weight:500;color:#2a72a8;cursor:pointer" style-hover="background:rgba(42,114,168,0.08)">{{ langLabel }}</button>
+      <button onClick="{{ navClick }}" data-target="booking" style="background:#d34a87;color:#fff;border:none;border-radius:999px;padding:9px 18px;font-size:12.5px;font-weight:500;letter-spacing:0.06em;cursor:pointer;white-space:nowrap" style-hover="background:#b93a72">{{ t.nav.book }}</button>
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" style="background:none;border:none;cursor:pointer;font-size:22px;color:#17344a;padding:2px 6px;line-height:1">☰</button>
+      </sc-if>
+    </div>
+  </nav>
+
+  <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:50;background:rgba(253,253,251,0.96);backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+      <button onClick="{{ toggleMenu }}" style="position:absolute;top:16px;right:20px;background:none;border:none;font-size:28px;color:#17344a;cursor:pointer">×</button>
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="7">
+        <button onClick="{{ navClick }}" data-target="{{ n.id }}" style="background:none;border:none;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#17344a;padding:8px" style-hover="color:#d34a87">{{ n.label }}</button>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <div style="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;display:flex;gap:8px;background:rgba(23,52,74,0.4);backdrop-filter:blur(8px);border-radius:999px;padding:8px 14px">
+    <sc-for list="{{ dotItems }}" as="d" hint-placeholder-count="8">
+      <button onClick="{{ navClick }}" data-target="{{ d.id }}" ref="{{ regDot }}" data-dot="{{ d.id }}" title="{{ d.label }}" style="width:9px;height:9px;border-radius:50%;border:none;background:#fff;opacity:0.45;cursor:pointer;padding:0;transition:opacity .3s, transform .3s"></button>
+    </sc-for>
+  </div>
+
+  <div ref="{{ spacerRef }}" style="height:500vh;width:1px"></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;parallax&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.35, &quot;min&quot;: 0.1, &quot;max&quot;: 1, &quot;step&quot;: 0.05, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Motion&quot;}, &quot;leafCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 9, &quot;min&quot;: 0, &quot;max&quot;: 16, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Motion&quot;}}">
+class Component extends DCLogic {
+  state = { lang: 'en', checkIn: '', checkOut: '', guests: 2, menuOpen: false, isMobile: false };
+
+  constructor(props) {
+    super(props);
+    this._sections = {};
+    this._dots = {};
+    this._raf = null;
+  }
+
+  componentDidMount() {
+    fetch('content.json?t=' + Date.now())
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data) this.setState({ _content: data }); })
+      .catch(() => {});
+    this._onScroll = () => {
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(() => { this._raf = null; this._apply(); });
+    };
+    this._onResize = () => this._layout();
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    document.body.addEventListener('scroll', this._onScroll, { passive: true });
+    document.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onResize);
+
+    this._touchStartX = null;
+    this._touchStartY = null;
+    this._touchStartScrollY = null;
+    this._touchMode = null;
+    this._onTouchStart = (e) => {
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      this._touchStartX = t.clientX;
+      this._touchStartY = t.clientY;
+      this._touchStartScrollY = this._getY();
+      this._touchMode = null;
+    };
+    this._onTouchMove = (e) => {
+      if (this._touchStartX == null) return;
+      const t = e.touches[0];
+      const dx = t.clientX - this._touchStartX;
+      const dy = t.clientY - this._touchStartY;
+      if (this._touchMode == null) {
+        if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+        this._touchMode = Math.abs(dx) > Math.abs(dy) ? 'horizontal' : 'vertical';
+      }
+      if (this._touchMode === 'horizontal') {
+        if (e.cancelable) e.preventDefault();
+        const target = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
+        this._scrollToImmediate(target);
+      }
+    };
+    this._onTouchEnd = () => {
+      if (this._touchMode === 'horizontal') this._snapToNearestSection();
+      this._touchStartX = null;
+      this._touchStartY = null;
+      this._touchMode = null;
+    };
+    window.addEventListener('touchstart', this._onTouchStart, { passive: true });
+    window.addEventListener('touchmove', this._onTouchMove, { passive: false });
+    window.addEventListener('touchend', this._onTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', this._onTouchEnd, { passive: true });
+    this._mq = window.matchMedia('(max-width: 900px)');
+    this._mqCb = () => this.setState({ isMobile: this._mq.matches });
+    this._mq.addEventListener('change', this._mqCb);
+    if (this._mq.matches) this.setState({ isMobile: true });
+    this._layout();
+    // re-measure once fonts/images settle
+    this._timers = [600, 1500, 3000].map(t => setTimeout(() => this._layout(), t));
+    if (window.ResizeObserver && this._track) {
+      this._ro = new ResizeObserver(() => this._layout());
+      this._ro.observe(this._track);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this._onScroll);
+    document.body.removeEventListener('scroll', this._onScroll);
+    document.removeEventListener('scroll', this._onScroll);
+    window.removeEventListener('resize', this._onResize);
+    window.removeEventListener('touchstart', this._onTouchStart);
+    window.removeEventListener('touchmove', this._onTouchMove);
+    window.removeEventListener('touchend', this._onTouchEnd);
+    window.removeEventListener('touchcancel', this._onTouchEnd);
+    if (this._mq) this._mq.removeEventListener('change', this._mqCb);
+    (this._timers || []).forEach(clearTimeout);
+    if (this._ro) this._ro.disconnect();
+    if (this._raf) cancelAnimationFrame(this._raf);
+  }
+
+  _layout() {
+    if (!this._track || !this._spacer) return;
+    const total = this._track.scrollWidth;
+    const max = Math.max(0, total - window.innerWidth);
+    this._max = max;
+    this._spacer.style.height = (max + window.innerHeight) + 'px';
+    this._apply();
+  }
+
+  _getY() {
+    return window.scrollY || document.body.scrollTop || document.documentElement.scrollTop || 0;
+  }
+
+  _scrollTo(top) {
+    const opts = { top, behavior: 'smooth' };
+    if (document.body.scrollHeight > document.documentElement.scrollHeight) {
+      document.body.scrollTo(opts);
+    } else {
+      window.scrollTo(opts);
+    }
+  }
+
+  _scrollToImmediate(top) {
+    if (document.body.scrollHeight > document.documentElement.scrollHeight) {
+      document.body.scrollTo(0, top);
+    } else {
+      window.scrollTo(0, top);
+    }
+  }
+
+  _nearestSectionId(y) {
+    let active = null, best = Infinity;
+    for (const id in this._sections) {
+      const el = this._sections[id];
+      if (!el) continue;
+      const d = Math.abs(el.offsetLeft - y);
+      if (d < best) { best = d; active = id; }
+    }
+    return active;
+  }
+
+  _snapToNearestSection() {
+    const id = this._nearestSectionId(this._getY());
+    const el = id && this._sections[id];
+    if (el) this._scrollTo(el.offsetLeft);
+  }
+
+  _apply() {
+    const y = Math.max(0, Math.min(this._getY(), this._max || 0));
+    if (this._track) this._track.style.transform = 'translate3d(' + (-y) + 'px,0,0)';
+    const par = this.props.parallax ?? 0.35;
+    if (this._bg) this._bg.style.backgroundPosition = (-y * par) + 'px 0';
+    // active dot
+    const active = this._nearestSectionId(y);
+    for (const id in this._dots) {
+      const dot = this._dots[id];
+      if (!dot) continue;
+      const on = id === active;
+      dot.style.opacity = on ? '1' : '0.45';
+      dot.style.transform = on ? 'scale(1.45)' : 'scale(1)';
+    }
+  }
+
+  renderVals() {
+    const lang = this.state.lang;
+    const defaultS = {
+      en: {
+        nav: { bungalows: 'Bungalows', pool: 'Pool & Garden', dining: 'Dining', location: 'Location', reviews: 'Guests', gallery: 'Gallery', contact: 'Contact', book: 'Book Now' },
+        hero: {
+          kicker: 'LUXURY BUNGALOWS · BITEZ, BODRUM',
+          subTitle: 'the sweet life, on the Aegean',
+          sub: 'A hidden garden of white bungalows minutes from Bitez beach — bougainvillea, olive trees and the slow rhythm of Bodrum.',
+          hint: 'Scroll — and travel across Bodrum'
+        },
+        bung: { title: 'The Bungalows', sub: 'Each bungalow opens onto the garden: cool stone floors, crisp linen, and a private veranda under the trees.', cta: 'Check availability' },
+        pool: { title: 'Pool & Garden', body: 'Our pool sits in the middle of a green courtyard — swim in the morning shade, read under the olive trees in the afternoon.', points: ['Outdoor pool with sun deck', 'Olive & citrus garden', 'Shaded loungers and hammocks', 'Quiet hours after sunset'] },
+        dining: { title: 'Breakfast & Kitchen', body: 'Mornings start with a full Aegean breakfast served in the garden: village cheeses, warm gözleme, local honey, tomatoes from Bitez.', quote: '“Breakfast until noon — you are on holiday.”' },
+        loc: { title: 'Find Us in Bitez', address: 'Bitez, Söğütlü Cd. No:146/1, 48470 Bodrum / Muğla', points: ['Bitez beach & seaside cafés — a short stroll away', 'Bodrum Castle, marina & old town — about 15 min by car', 'Windmills viewpoint for sunset — 10 min', 'Gümüşlük fish restaurants — 20 min'], mapBtn: 'Open in Google Maps' },
+        rev: { title: 'Guest Words', note: 'Sample reviews — send us your real guest comments and we will place them here.', items: [
+          { name: 'Selin K.', text: 'The garden is magical at night. Quietest sleep we have had in years.' },
+          { name: 'Mark T.', text: 'Five minutes to the beach, breakfast under the trees. We extended our stay twice.' },
+          { name: 'Amelie R.', text: 'Small, personal, spotless. The hosts treat you like family.' }
+        ] },
+        gal: { title: 'Gallery', sub: 'Drag & drop your own photos into the frames — they will stay in place.' },
+        book: { title: 'Plan Your Stay', note: 'Pick your dates — we confirm availability the same day by WhatsApp or e-mail.', checkIn: 'CHECK-IN', checkOut: 'CHECK-OUT', guests: 'GUESTS', wa: 'Book via WhatsApp', mail: 'Book via E-mail' },
+        contact: { rights: '© 2026 Dolce Vita Luxury Bungalows · Bitez, Bodrum' }
+      },
+      tr: {
+        nav: { bungalows: 'Bungalovlar', pool: 'Havuz & Bahçe', dining: 'Kahvaltı', location: 'Konum', reviews: 'Misafirler', gallery: 'Galeri', contact: 'İletişim', book: 'Rezervasyon' },
+        hero: {
+          kicker: 'LUXURY BUNGALOWS · BİTEZ, BODRUM',
+          subTitle: 'Ege’de tatlı hayat',
+          sub: 'Bitez plajına dakikalar uzaklıkta, begonviller ve zeytin ağaçları arasında saklı beyaz bungalovlar — Bodrum’un yavaş ritmi.',
+          hint: 'Kaydırın — Bodrum boyunca yolculuk edin'
+        },
+        bung: { title: 'Bungalovlar', sub: 'Her bungalov bahçeye açılır: serin taş zeminler, tertemiz keten ve ağaçların altında özel veranda.', cta: 'Müsaitlik sor' },
+        pool: { title: 'Havuz & Bahçe', body: 'Havuzumuz yemyeşil bir avlunun ortasında — sabah serinliğinde yüzün, öğleden sonra zeytin ağaçlarının altında kitap okuyun.', points: ['Güneşlenme terasli açık havuz', 'Zeytin ve narenciye bahçesi', 'Gölgeli şezlong ve hamaklar', 'Gün batımından sonra sessiz saatler'] },
+        dining: { title: 'Kahvaltı & Mutfak', body: 'Sabahlar bahçede serpme Ege kahvaltısıyla başlar: köy peynirleri, sıcak gözleme, yerel bal, Bitez domatesleri.', quote: '“Kahvaltı öğlene kadar — tatildesiniz.”' },
+        loc: { title: 'Bitez’de Bizi Bulun', address: 'Bitez, Söğütlü Cd. No:146/1, 48470 Bodrum / Muğla', points: ['Bitez plajı ve sahil kafeleri — kısa bir yürüyüş', 'Bodrum Kalesi, marina ve eski şehir — arabayla ~15 dk', 'Gün batımı için Yel Değirmenleri — 10 dk', 'Gümüşlük balık restoranları — 20 dk'], mapBtn: 'Google Haritalar’da aç' },
+        rev: { title: 'Misafir Yorumları', note: 'Örnek yorumlar — gerçek misafir yorumlarınızı gönderin, buraya yerleştirelim.', items: [
+          { name: 'Selin K.', text: 'Bahçe geceleri büyülü. Yıllardır uyuduğumuz en sessiz uyku.' },
+          { name: 'Mark T.', text: 'Plaja beş dakika, kahvaltı ağaçların altında. Konaklamamızı iki kez uzattık.' },
+          { name: 'Amelie R.', text: 'Küçük, samimi, tertemiz. Ev sahipleri size ailenizden biri gibi davranıyor.' }
+        ] },
+        gal: { title: 'Galeri', sub: 'Kendi fotoğraflarınızı çerçevelere sürükleyip bırakın — yerinde kalırlar.' },
+        book: { title: 'Konaklamanızı Planlayın', note: 'Tarihlerinizi seçin — müsaitliği aynı gün WhatsApp veya e-posta ile onaylıyoruz.', checkIn: 'GİRİŞ', checkOut: 'ÇIKIŞ', guests: 'KİŞİ', wa: 'WhatsApp ile rezervasyon', mail: 'E-posta ile rezervasyon' },
+        contact: { rights: '© 2026 Dolce Vita Luxury Bungalows · Bitez, Bodrum' }
+      }
+    };
+    const defaultBungalowsData = {
+      en: [
+        { name: 'Garden Bungalow', desc: 'A cosy hideaway opening straight onto the greenery. King bed, rain shower, veranda.', chips: ['2 guests', '30 m²', 'A/C', 'Veranda'] },
+        { name: 'Family Bungalow', desc: 'Two connected rooms around a shared terrace — space for the whole crew.', chips: ['4 guests', '45 m²', 'A/C', 'Terrace'] },
+        { name: 'Deluxe Bungalow', desc: 'The quietest corner of the garden, with an outdoor bathtub and pergola lounge.', chips: ['2–3 guests', '38 m²', 'Outdoor tub'] }
+      ],
+      tr: [
+        { name: 'Bahçe Bungalov', desc: 'Doğrudan yeşilliğe açılan sıcak bir sığınak. King yatak, yağmur duşu, veranda.', chips: ['2 kişi', '30 m²', 'Klima', 'Veranda'] },
+        { name: 'Aile Bungalovu', desc: 'Ortak terasın çevresinde iki bağlantılı oda — tüm aile için alan.', chips: ['4 kişi', '45 m²', 'Klima', 'Teras'] },
+        { name: 'Deluxe Bungalov', desc: 'Bahçenin en sakin köşesi; açık hava küveti ve pergola oturma alanı.', chips: ['2–3 kişi', '38 m²', 'Açık küvet'] }
+      ]
+    };
+    const content = this.state._content;
+    const S = (content && content.S) || defaultS;
+    const bungalowsData = (content && content.bungalowsData) || defaultBungalowsData;
+    const t = S[lang];
+    const navItems = ['bungalows', 'pool', 'dining', 'location', 'reviews', 'gallery', 'contact'].map(id => ({ id, label: t.nav[id] }));
+    const dotItems = [{ id: 'hero', label: 'Dolce Vita' }].concat(navItems).concat([{ id: 'booking', label: t.nav.book }]);
+
+    const bungalows = bungalowsData[lang].map((b, i) => ({ ...b, slotId: 'bungalow-' + (i + 1), placeholder: 'Bungalow photo ' + (i + 1) }));
+
+    const leafColors = [['#6a8f5f', '#4c7345'], ['#83a86f', '#5d824f'], ['#d34a87', '#e87fae'], ['#9fbf74', '#6a8f5f']];
+    const count = Math.max(0, Math.min(16, this.props.leafCount ?? 9));
+    const leaves = Array.from({ length: count }, (_, i) => {
+      const c = leafColors[i % leafColors.length];
+      return { left: (i * 97) % 100, dur: 11 + (i * 3.7) % 9, delay: -((i * 5.3) % 18), size: 10 + (i * 7) % 12, c1: c[0], c2: c[1] };
+    });
+
+    const phone = '905451584848';
+    const g = this.state.guests;
+    const msg = lang === 'tr'
+      ? 'Merhaba! Rezervasyon yapmak istiyorum.\nGiriş: ' + (this.state.checkIn || '—') + '\nÇıkış: ' + (this.state.checkOut || '—') + '\nKişi: ' + g
+      : 'Hello! I would like to book a stay.\nCheck-in: ' + (this.state.checkIn || '—') + '\nCheck-out: ' + (this.state.checkOut || '—') + '\nGuests: ' + g;
+    const waHref = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+    const mailHref = 'mailto:info@dolcevitabodrum.com?subject=' + encodeURIComponent(lang === 'tr' ? 'Rezervasyon Talebi' : 'Reservation Request') + '&body=' + encodeURIComponent(msg);
+
+    return {
+      t, navItems, dotItems, bungalows, leaves,
+      openWa: () => window.open(waHref, '_blank'),
+      openMail: () => { window.location.href = mailHref; },
+      langLabel: lang === 'en' ? 'TR' : 'EN',
+      showLinks: !this.state.isMobile,
+      isMobile: this.state.isMobile,
+      menuOpen: this.state.menuOpen,
+      checkIn: this.state.checkIn,
+      checkOut: this.state.checkOut,
+      guests: this.state.guests,
+      guestOptions: [1, 2, 3, 4, 5, 6, 7, 8],
+      trackRef: (el) => { this._track = el; },
+      bgRef: (el) => { this._bg = el; },
+      tintRef: (el) => { this._tint = el; },
+      spacerRef: (el) => { this._spacer = el; },
+      regSection: (el) => { if (el) this._sections[el.getAttribute('data-section')] = el; },
+      regDot: (el) => { if (el) this._dots[el.getAttribute('data-dot')] = el; },
+      toggleLang: () => this.setState(s => ({ lang: s.lang === 'en' ? 'tr' : 'en' })),
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      onCheckIn: (e) => this.setState({ checkIn: e.target.value }),
+      onCheckOut: (e) => this.setState({ checkOut: e.target.value }),
+      onGuests: (e) => this.setState({ guests: Number(e.target.value) }),
+      navClick: (e) => {
+        const id = e.currentTarget.getAttribute('data-target');
+        const el = this._sections[id];
+        if (el) this._scrollTo(el.offsetLeft);
+        if (this.state.menuOpen) this.setState({ menuOpen: false });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
