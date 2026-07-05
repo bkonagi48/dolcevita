@@ -113,7 +113,7 @@ app.use((req, res, next) => {
   serveStatic(req, res, next);
 });
 
-app.get('/', (req, res) => res.sendFile(SITE_FILE));
+app.get('/', (req, res) => res.redirect(301, '/Dolce%20Vita%20Bodrum.dc.html'));
 
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {
