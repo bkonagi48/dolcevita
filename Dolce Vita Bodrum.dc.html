@@ -282,6 +282,7 @@ class Component extends DCLogic {
         if (e.cancelable) e.preventDefault();
         const target = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
         this._scrollToImmediate(target);
+        this._apply(target);
       } else if (this._touchMode === 'vertical' && this._mq && this._mq.matches) {
         // mobilde dikey touch tarayıcı barlarını tetikliyor; sadece yatay swipe kalsın
         if (e.cancelable) e.preventDefault();
@@ -373,8 +374,8 @@ class Component extends DCLogic {
     if (el) this._scrollTo(el.offsetLeft);
   }
 
-  _apply() {
-    const y = Math.max(0, Math.min(this._getY(), this._max || 0));
+  _apply(overrideY) {
+    const y = Math.max(0, Math.min(overrideY != null ? overrideY : this._getY(), this._max || 0));
     if (this._track) this._track.style.transform = 'translate3d(' + (-y) + 'px,0,0)';
     const par = this.props.parallax ?? 0.35;
     if (this._bg) this._bg.style.backgroundPosition = (-y * par) + 'px 0';
