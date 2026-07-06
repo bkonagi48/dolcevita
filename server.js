@@ -6,9 +6,11 @@ const cookieParser = require('cookie-parser');
 const multer = require('multer');
 
 const ROOT = __dirname;
-const CONTENT_FILE = path.join(ROOT, 'content.json');
-const SLOTS_FILE = path.join(ROOT, '.image-slots.state.json');
-const BG_FILE = path.join(ROOT, 'assets', 'pano-wide.png');
+// Vercel'de /var/task read-only — yazılabilir dosyaları /tmp'ye koy
+const TMP = process.env.VERCEL ? '/tmp' : ROOT;
+const CONTENT_FILE = path.join(TMP, 'content.json');
+const SLOTS_FILE = path.join(TMP, '.image-slots.state.json');
+const BG_FILE = path.join(TMP, 'pano-wide.png');
 const SITE_FILE = path.join(ROOT, 'Dolce Vita Bodrum.dc.html');
 
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';

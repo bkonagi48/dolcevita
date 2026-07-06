@@ -3,7 +3,19 @@
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "Dolce Vita Bodrum.dc.html",
+          "admin.html",
+          "support.js",
+          "image-slot.js",
+          "omelette-bridge.js",
+          "vendor/**",
+          "assets/**",
+          "uploads/**"
+        ]
+      }
     }
   ],
   "routes": [
