@@ -282,6 +282,9 @@ class Component extends DCLogic {
         if (e.cancelable) e.preventDefault();
         const target = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
         this._scrollToImmediate(target);
+      } else if (this._touchMode === 'vertical') {
+        // dikey kaydırmayı engelle: sadece sağa/sola kaydırma section geçişi yapsın
+        if (e.cancelable) e.preventDefault();
       }
     };
     this._onTouchEnd = () => {
