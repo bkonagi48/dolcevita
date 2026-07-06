@@ -262,12 +262,17 @@ class Component extends DCLogic {
     this._touchStartY = null;
     this._touchStartScrollY = null;
     this._touchMode = null;
+    this._touchStartTime = 0;
+    this._lastDx = 0;
     this._onTouchStart = (e) => {
       if (e.touches.length !== 1) return;
       const t = e.touches[0];
       this._touchStartX = t.clientX;
       this._touchStartY = t.clientY;
       this._touchStartScrollY = this._getY();
+      this._touchStartId = this._nearestSectionId(this._touchStartScrollY);
+      this._touchStartTime = performance.now();
+      this._lastDx = 0;
       this._touchMode = null;
     };
     this._onTouchMove = (e) => {
@@ -282,6 +287,7 @@ class Component extends DCLogic {
       }
       if (this._touchMode === 'horizontal') {
         if (e.cancelable) e.preventDefault();
+        this._lastDx = dx;
         const target = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
         this._scrollToImmediate(target);
         this._apply(target);
@@ -291,7 +297,16 @@ class Component extends DCLogic {
       }
     };
     this._onTouchEnd = () => {
-      if (this._touchMode === 'horizontal') this._snapToNearestSection();
+      if (this._touchMode === 'horizontal') {
+        const elapsed = performance.now() - this._touchStartTime;
+        // hızlı/kısa fiske (flick): mesafe az olsa bile bir sonraki/önceki bölüme geç (Instagram tarzı)
+        const isFlick = elapsed < 380 && Math.abs(this._lastDx) > 18;
+        if (isFlick) {
+          this._snapToAdjacentSection(this._lastDx < 0 ? 1 : -1);
+        } else {
+          this._snapToNearestSection();
+        }
+      }
       this._touchStartX = null;
       this._touchStartY = null;
       this._touchMode = null;
@@ -373,6 +388,23 @@ class Component extends DCLogic {
   _snapToNearestSection() {
     const id = this._nearestSectionId(this._getY());
     const el = id && this._sections[id];
+    if (el) this._scrollTo(el.offsetLeft);
+  }
+
+  _sortedSectionIds() {
+    return Object.keys(this._sections)
+      .filter((id) => this._sections[id])
+      .sort((a, b) => this._sections[a].offsetLeft - this._sections[b].offsetLeft);
+  }
+
+  _snapToAdjacentSection(dir) {
+    const ids = this._sortedSectionIds();
+    if (!ids.length) return;
+    let idx = ids.indexOf(this._touchStartId);
+    if (idx === -1) idx = ids.indexOf(this._nearestSectionId(this._touchStartScrollY || 0));
+    if (idx === -1) idx = 0;
+    idx = Math.max(0, Math.min(ids.length - 1, idx + dir));
+    const el = this._sections[ids[idx]];
     if (el) this._scrollTo(el.offsetLeft);
   }
 
