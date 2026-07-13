@@ -378,7 +378,7 @@ class Component extends DCLogic {
     let velocity = this._velocityX; // px/ms, parmağın son anlık hızı
     const friction = 0.94;
     const step = () => {
-      if (Math.abs(velocity) < 0.02) { this._momentumRaf = null; return; }
+      if (Math.abs(velocity) < 0.02) { this._momentumRaf = null; this._settleToNearestSection(); return; }
       const current = this._getY();
       const next = Math.max(0, Math.min(current - velocity * 16, this._max || 0));
       this._scrollToImmediate(next);
@@ -388,6 +388,19 @@ class Component extends DCLogic {
       this._momentumRaf = requestAnimationFrame(step);
     };
     this._momentumRaf = requestAnimationFrame(step);
+  }
+
+  _settleToNearestSection() {
+    // momentum bittiğinde kartlar arasında yarım kalmasın, en yakın karta yumuşakça hizalan
+    const y = this._getY();
+    let best = null, bestDist = Infinity;
+    for (const id in this._sections) {
+      const el = this._sections[id];
+      if (!el) continue;
+      const d = Math.abs(el.offsetLeft - y);
+      if (d < bestDist) { bestDist = d; best = el; }
+    }
+    if (best && bestDist > 2) this._scrollTo(best.offsetLeft);
   }
 
   _apply(overrideY) {
