@@ -249,6 +249,9 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this._onScroll = () => {
+      // parmakla sürükleme/momentum sırasında transform'u tek kaynak (touch) sürsün,
+      // scroll event'i araya girip çift güncelleme (titreme) yapmasın
+      if (this._touchDriving) return;
       if (this._raf) return;
       this._raf = requestAnimationFrame(() => { this._raf = null; this._apply(); });
     };
@@ -272,7 +275,8 @@ class Component extends DCLogic {
       const t = e.touches[0];
       this._touchStartX = t.clientX;
       this._touchStartY = t.clientY;
-      this._touchStartScrollY = this._getY();
+      this._touchStartScrollY = this._touchDriving ? this._vy : this._getY();
+      this._vy = this._touchStartScrollY;
       this._velocityX = 0;
       this._lastMoveX = t.clientX;
       this._lastMoveTime = performance.now();
@@ -295,17 +299,20 @@ class Component extends DCLogic {
         if (dt > 0) this._velocityX = (t.clientX - this._lastMoveX) / dt;
         this._lastMoveX = t.clientX;
         this._lastMoveTime = now;
-        const target = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
-        this._scrollToImmediate(target);
-        this._apply(target);
+        // sürükleme boyunca native scroll'a hiç dokunma: transform'u tek kaynaktan,
+        // sanal pozisyonla sür — çift güncelleme/titreme olmasın
+        this._touchDriving = true;
+        this._vy = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
+        this._apply(this._vy);
       } else if (this._touchMode === 'vertical' && this._mq && this._mq.matches) {
         // mobilde dikey touch tarayıcı barlarını tetikliyor; sadece yatay swipe kalsın
         if (e.cancelable) e.preventDefault();
       }
     };
     this._onTouchEnd = () => {
-      // serbest kaydırma: parmak kalkınca son hızla devam edip yavaşça yavaşlasın, bölüme kilitlenmesin
+      // serbest kaydırma: parmak kalkınca son hızla devam edip yavaşça yavaşlasın
       if (this._touchMode === 'horizontal') this._startMomentum();
+      else if (this._touchDriving) this._endTouchDrive();
       this._touchStartX = null;
       this._touchStartY = null;
       this._touchMode = null;
@@ -378,21 +385,26 @@ class Component extends DCLogic {
     let velocity = this._velocityX; // px/ms, parmağın son anlık hızı
     const friction = 0.94;
     const step = () => {
-      if (Math.abs(velocity) < 0.02) { this._momentumRaf = null; this._settleToNearestSection(); return; }
-      const current = this._getY();
-      const next = Math.max(0, Math.min(current - velocity * 16, this._max || 0));
-      this._scrollToImmediate(next);
-      this._apply(next);
+      const atEdge = this._vy <= 0 || this._vy >= (this._max || 0);
+      if (Math.abs(velocity) < 0.02 || atEdge) {
+        this._momentumRaf = null;
+        this._endTouchDrive();
+        return;
+      }
+      this._vy = Math.max(0, Math.min(this._vy - velocity * 16, this._max || 0));
+      this._apply(this._vy);
       velocity *= friction;
-      if (next <= 0 || next >= (this._max || 0)) { this._momentumRaf = null; return; }
       this._momentumRaf = requestAnimationFrame(step);
     };
     this._momentumRaf = requestAnimationFrame(step);
   }
 
-  _settleToNearestSection() {
-    // momentum bittiğinde kartlar arasında yarım kalmasın, en yakın karta yumuşakça hizalan
-    const y = this._getY();
+  _endTouchDrive() {
+    // sanal sürüşü bitir: native scroll'u tek seferde sanal pozisyona eşitle,
+    // sonra en yakın karta yumuşakça hizalan
+    const y = Math.max(0, Math.min(this._vy || 0, this._max || 0));
+    this._scrollToImmediate(y);
+    this._touchDriving = false;
     let best = null, bestDist = Infinity;
     for (const id in this._sections) {
       const el = this._sections[id];
