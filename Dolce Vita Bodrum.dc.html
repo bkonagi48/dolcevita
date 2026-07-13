@@ -14,11 +14,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 html,body{margin:0;padding:0;background:#e8f1f6}
-@media(max-width:900px){html,body{touch-action:none;overscroll-behavior:none}}
 @keyframes dvFall{0%{transform:translate3d(0,-10vh,0) rotate(0deg)}25%{transform:translate3d(4vw,20vh,0) rotate(110deg)}50%{transform:translate3d(-3vw,48vh,0) rotate(190deg)}75%{transform:translate3d(3vw,76vh,0) rotate(310deg)}100%{transform:translate3d(-2vw,112vh,0) rotate(420deg)}}
 @keyframes dvSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(4deg)}}
 @keyframes dvFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-@keyframes dvHint{0%,100%{transform:translateX(0);opacity:.85}50%{transform:translateX(12px);opacity:1}}
+@keyframes dvHint{0%,100%{transform:translateY(0);opacity:.85}50%{transform:translateY(10px);opacity:1}}
 input,select,button{font-family:inherit}
 image-slot{display:block;width:100%;height:100%}
 ::selection{background:#d34a87;color:#fff}
@@ -26,13 +25,14 @@ image-slot{display:block;width:100%;height:100%}
 </helmet>
 <div style="font-family:'Jost',sans-serif;color:#17344a">
 
-  <div style="position:fixed;inset:0;overflow:hidden">
+  <div style="position:fixed;inset:0;overflow:hidden;z-index:0">
     <div ref="{{ bgRef }}" style="position:absolute;inset:0;background-image:url('assets/pano-wide.png');background-repeat:repeat-x;background-size:auto 100%;background-position:0 0;will-change:background-position"></div>
     <div ref="{{ tintRef }}" style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(23,52,74,0.10) 0%, rgba(23,52,74,0) 35%, rgba(23,52,74,0.22) 100%);pointer-events:none"></div>
+  </div>
 
-    <div ref="{{ trackRef }}" style="position:absolute;top:0;left:0;height:100%;display:flex;align-items:stretch;will-change:transform">
+    <div ref="{{ trackRef }}" style="position:relative;z-index:1">
 
-      <section data-screen-label="Hero" data-section="hero" ref="{{ regSection }}" style="flex:none;width:100vw;height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 6vw 60px;position:relative">
+      <section data-screen-label="Hero" data-section="hero" ref="{{ regSection }}" style="width:100%;height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 6vw 60px;position:relative">
         <div style="background:rgba(253,253,251,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:clamp(28px,5vw,56px) clamp(24px,6vw,72px);box-shadow:0 24px 60px rgba(23,52,74,0.18);max-width:760px;animation:dvFloat 7s ease-in-out infinite">
           <div style="font-size:12px;letter-spacing:0.32em;font-weight:500;color:#2a72a8">{{ t.hero.kicker }}</div>
           <h1 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(44px,8vw,92px);line-height:1.02;margin:14px 0 10px;color:#17344a">Dolce Vita</h1>
@@ -40,18 +40,19 @@ image-slot{display:block;width:100%;height:100%}
           <p style="font-size:clamp(14px,1.6vw,17px);font-weight:300;line-height:1.7;color:#2c4a60;max-width:520px;margin:18px auto 0">{{ t.hero.sub }}</p>
         </div>
         <div style="position:absolute;bottom:80px;left:0;right:0;display:flex;justify-content:center">
-          <div style="display:flex;align-items:center;gap:10px;background:rgba(23,52,74,0.55);color:#fff;backdrop-filter:blur(6px);border-radius:999px;padding:10px 20px;font-size:13px;letter-spacing:0.06em;animation:dvHint 2.6s ease-in-out infinite">{{ t.hero.hint }} ⟶</div>
+          <div style="display:flex;align-items:center;gap:10px;background:rgba(23,52,74,0.55);color:#fff;backdrop-filter:blur(6px);border-radius:999px;padding:10px 20px;font-size:13px;letter-spacing:0.06em;animation:dvHint 2.6s ease-in-out infinite">{{ t.hero.hint }} ↓</div>
         </div>
       </section>
 
-      <section data-screen-label="Bungalows" data-section="bungalows" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(18px,2.5vw,32px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
-        <div style="flex:none;max-width:300px">
+      <section data-screen-label="Bungalows" data-section="bungalows" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:clamp(18px,3vh,28px);padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
+        <div style="max-width:520px">
           <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">01</div>
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(36px,4.5vw,58px);font-weight:600;margin:8px 0 12px;color:#fff;text-shadow:0 2px 18px rgba(23,52,74,0.5)">{{ t.bung.title }}</h2>
           <p style="background:rgba(253,253,251,0.78);backdrop-filter:blur(8px);border-radius:14px;padding:14px 18px;font-size:14.5px;font-weight:300;line-height:1.65;color:#2c4a60;margin:0">{{ t.bung.sub }}</p>
         </div>
+        <div style="display:flex;gap:clamp(14px,2.5vw,24px);flex-wrap:wrap;justify-content:flex-start">
         <sc-for list="{{ bungalows }}" as="b" hint-placeholder-count="3">
-          <div style="flex:none;width:min(78vw,320px);background:rgba(253,253,251,0.86);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.65);border-radius:18px;overflow:hidden;box-shadow:0 18px 44px rgba(23,52,74,0.16);display:flex;flex-direction:column">
+          <div style="flex:none;width:min(86vw,320px);background:rgba(253,253,251,0.86);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.65);border-radius:18px;overflow:hidden;box-shadow:0 18px 44px rgba(23,52,74,0.16);display:flex;flex-direction:column">
             <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="{{ b.slotId }}" placeholder="{{ b.placeholder }}" shape="rect" style="width:100%;height:180px;display:block" hint-size="100%,180px"></x-import>
             <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px">
               <div style="font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:#17344a">{{ b.name }}</div>
@@ -65,9 +66,10 @@ image-slot{display:block;width:100%;height:100%}
             </div>
           </div>
         </sc-for>
+        </div>
       </section>
 
-      <section data-screen-label="Pool &amp; Garden" data-section="pool" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+      <section data-screen-label="Pool &amp; Garden" data-section="pool" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
         <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="pool-hero" placeholder="Pool photo — drop here" shape="rounded" radius="20" style="width:min(80vw,560px);height:min(46dvh,420px);display:block;box-shadow:0 24px 56px rgba(23,52,74,0.25)" hint-size="560px,420px"></x-import>
         <div style="flex:none;width:min(84vw,380px);max-height:calc(100dvh - 150px);overflow-y:auto;background:rgba(253,253,251,0.84);backdrop-filter:blur(10px);border-radius:18px;padding:clamp(18px,2.5vw,26px) clamp(18px,3vw,28px);box-shadow:0 18px 44px rgba(23,52,74,0.16)">
           <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">02</div>
@@ -79,7 +81,7 @@ image-slot{display:block;width:100%;height:100%}
         </div>
       </section>
 
-      <section data-screen-label="Dining" data-section="dining" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+      <section data-screen-label="Dining" data-section="dining" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;flex-wrap:wrap-reverse;align-items:center;justify-content:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
         <div style="flex:none;width:min(84vw,380px);max-height:calc(100dvh - 150px);overflow-y:auto;background:rgba(253,253,251,0.84);backdrop-filter:blur(10px);border-radius:18px;padding:clamp(18px,2.5vw,26px) clamp(18px,3vw,28px);box-shadow:0 18px 44px rgba(23,52,74,0.16)">
           <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">03</div>
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin:8px 0 10px;color:#17344a">{{ t.dining.title }}</h2>
@@ -89,7 +91,7 @@ image-slot{display:block;width:100%;height:100%}
         <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="dining-hero" placeholder="Breakfast photo — drop here" shape="rounded" radius="20" style="width:min(80vw,520px);height:min(44dvh,400px);display:block;box-shadow:0 24px 56px rgba(23,52,74,0.25)" hint-size="520px,400px"></x-import>
       </section>
 
-      <section data-screen-label="Location" data-section="location" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+      <section data-screen-label="Location" data-section="location" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:clamp(20px,3vw,40px);padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
         <div style="flex:none;width:min(84vw,400px);max-height:calc(100dvh - 150px);overflow-y:auto;background:rgba(253,253,251,0.84);backdrop-filter:blur(10px);border-radius:18px;padding:clamp(18px,2.5vw,26px) clamp(18px,3vw,28px);box-shadow:0 18px 44px rgba(23,52,74,0.16)">
           <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">04</div>
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:600;margin:8px 0 10px;color:#17344a">{{ t.loc.title }}</h2>
@@ -104,28 +106,30 @@ image-slot{display:block;width:100%;height:100%}
         </div>
       </section>
 
-      <section data-screen-label="Reviews" data-section="reviews" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(18px,2.5vw,30px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
-        <div style="flex:none;max-width:260px">
+      <section data-screen-label="Reviews" data-section="reviews" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:clamp(18px,3vh,28px);padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
+        <div style="max-width:520px">
           <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">05</div>
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.2vw,54px);font-weight:600;margin:8px 0 10px;color:#fff;text-shadow:0 2px 18px rgba(23,52,74,0.5)">{{ t.rev.title }}</h2>
           <div style="background:rgba(253,253,251,0.7);border-radius:10px;padding:8px 12px;font-size:11.5px;color:#7a8a96;font-style:italic">{{ t.rev.note }}</div>
         </div>
+        <div style="display:flex;gap:clamp(14px,2.5vw,24px);flex-wrap:wrap;justify-content:flex-start">
         <sc-for list="{{ t.rev.items }}" as="r" hint-placeholder-count="3">
-          <div style="flex:none;width:min(78vw,300px);background:rgba(253,253,251,0.86);backdrop-filter:blur(10px);border-radius:18px;padding:24px 26px;box-shadow:0 18px 44px rgba(23,52,74,0.16);display:flex;flex-direction:column;gap:10px">
+          <div style="flex:none;width:min(86vw,300px);background:rgba(253,253,251,0.86);backdrop-filter:blur(10px);border-radius:18px;padding:24px 26px;box-shadow:0 18px 44px rgba(23,52,74,0.16);display:flex;flex-direction:column;gap:10px">
             <div style="color:#e8a33d;font-size:15px;letter-spacing:2px">★★★★★</div>
             <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;line-height:1.5;color:#17344a">“{{ r.text }}”</div>
             <div style="font-size:12.5px;letter-spacing:0.08em;color:#2a72a8;font-weight:500">— {{ r.name }}</div>
           </div>
         </sc-for>
+        </div>
       </section>
 
-      <section data-screen-label="Gallery" data-section="gallery" ref="{{ regSection }}" style="flex:none;width:auto;height:100dvh;box-sizing:border-box;display:flex;align-items:center;gap:clamp(18px,2.5vw,32px);padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
-        <div style="flex:none;max-width:240px">
+      <section data-screen-label="Gallery" data-section="gallery" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:clamp(18px,3vh,28px);padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
+        <div style="max-width:520px">
           <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">06</div>
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.2vw,54px);font-weight:600;margin:8px 0 10px;color:#fff;text-shadow:0 2px 18px rgba(23,52,74,0.5)">{{ t.gal.title }}</h2>
           <div style="background:rgba(253,253,251,0.7);border-radius:10px;padding:8px 12px;font-size:12px;color:#2c4a60">{{ t.gal.sub }}</div>
         </div>
-        <div style="flex:none;display:grid;grid-template-columns:repeat(3, minmax(min(24vw,160px), 220px));grid-auto-rows:minmax(min(18vw,120px),160px);gap:clamp(8px,1.5vw,14px);max-width:82vw">
+        <div style="display:grid;grid-template-columns:repeat(3, minmax(min(24vw,160px), 220px));grid-auto-rows:minmax(min(18vw,120px),160px);gap:clamp(8px,1.5vw,14px);max-width:86vw">
           <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-1" placeholder="Photo 1" shape="rounded" radius="14" style="display:block;width:100%;height:100%;grid-row:span 2" hint-size="220px,320px"></x-import>
           <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-2" placeholder="Photo 2" shape="rounded" radius="14" style="display:block;width:100%;height:100%" hint-size="220px,160px"></x-import>
           <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="gal-3" placeholder="Photo 3" shape="rounded" radius="14" style="display:block;width:100%;height:100%" hint-size="220px,160px"></x-import>
@@ -134,7 +138,7 @@ image-slot{display:block;width:100%;height:100%}
         </div>
       </section>
 
-      <section data-screen-label="Booking" data-section="booking" ref="{{ regSection }}" style="flex:none;width:100vw;height:100dvh;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+      <section data-screen-label="Booking" data-section="booking" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
         <div style="width:min(92vw,520px);max-height:calc(100dvh - 140px);overflow-y:auto;background:rgba(253,253,251,0.9);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.7);border-radius:22px;padding:clamp(20px,3vw,30px) clamp(20px,3.5vw,32px);box-shadow:0 24px 60px rgba(23,52,74,0.2)">
           <div style="font-size:12px;letter-spacing:0.3em;color:#d34a87;font-weight:500">07</div>
           <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,46px);font-weight:600;margin:8px 0 6px;color:#17344a">{{ t.book.title }}</h2>
@@ -159,7 +163,7 @@ image-slot{display:block;width:100%;height:100%}
         </div>
       </section>
 
-      <section data-screen-label="Contact" data-section="contact" ref="{{ regSection }}" style="flex:none;width:100vw;height:100dvh;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:clamp(84px,12vh,110px) 7vw clamp(40px,8vh,60px)">
+      <section data-screen-label="Contact" data-section="contact" ref="{{ regSection }}" style="width:100%;min-height:100dvh;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:clamp(84px,12vh,110px) 7vw clamp(60px,8vh,80px)">
         <div style="text-align:center;background:rgba(23,52,74,0.72);backdrop-filter:blur(12px);border-radius:22px;padding:40px clamp(28px,6vw,64px);color:#fdfdfb;box-shadow:0 24px 60px rgba(23,52,74,0.3);max-width:560px">
           <div style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,4.5vw,52px);font-weight:600;font-style:italic">Dolce Vita</div>
           <div style="font-size:11px;letter-spacing:0.34em;color:#9fc3dd;margin:4px 0 22px">LUXURY BUNGALOWS · BODRUM</div>
@@ -175,7 +179,7 @@ image-slot{display:block;width:100%;height:100%}
 
     </div>
 
-    <div style="position:absolute;inset:0;pointer-events:none;overflow:hidden">
+    <div style="position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:30">
       <sc-for list="{{ leaves }}" as="leaf" hint-placeholder-count="0">
         <div style="position:absolute;top:-40px;left:{{ leaf.left }}vw;animation:dvFall {{ leaf.dur }}s linear infinite;animation-delay:{{ leaf.delay }}s;opacity:0.75">
           <div style="width:{{ leaf.size }}px;height:{{ leaf.size }}px;background:linear-gradient(135deg, {{ leaf.c1 }}, {{ leaf.c2 }});border-radius:0 62% 4% 62%;transform:rotate(45deg)"></div>
@@ -195,7 +199,6 @@ image-slot{display:block;width:100%;height:100%}
         <div style="width:64px;height:34px;background:linear-gradient(315deg,#b93a72,#d34a87);border-radius:100% 0 100% 0;transform:rotate(12deg);margin-left:-28px;margin-bottom:20px;opacity:0.85"></div>
       </div>
     </div>
-  </div>
 
   <nav style="position:fixed;top:0;left:0;right:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px clamp(16px,3vw,32px);background:rgba(253,253,251,0.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,0.5);box-shadow:0 2px 20px rgba(23,52,74,0.08)">
     <button onClick="{{ navClick }}" data-target="hero" style="display:flex;flex-direction:column;align-items:flex-start;background:none;border:none;cursor:pointer;padding:0;text-align:left">
@@ -227,13 +230,11 @@ image-slot{display:block;width:100%;height:100%}
     </div>
   </sc-if>
 
-  <div style="position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:40;display:flex;gap:8px;background:rgba(23,52,74,0.4);backdrop-filter:blur(8px);border-radius:999px;padding:8px 14px">
+  <div style="position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:8px;background:rgba(23,52,74,0.4);backdrop-filter:blur(8px);border-radius:999px;padding:14px 8px">
     <sc-for list="{{ dotItems }}" as="d" hint-placeholder-count="8">
       <button onClick="{{ navClick }}" data-target="{{ d.id }}" ref="{{ regDot }}" data-dot="{{ d.id }}" title="{{ d.label }}" style="width:9px;height:9px;border-radius:50%;border:none;background:#fff;opacity:0.45;cursor:pointer;padding:0;transition:opacity .3s, transform .3s"></button>
     </sc-for>
   </div>
-
-  <div ref="{{ spacerRef }}" style="height:500vh;width:1px"></div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;parallax&quot;: {&quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 0.35, &quot;min&quot;: 0.1, &quot;max&quot;: 1, &quot;step&quot;: 0.05, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Motion&quot;}, &quot;leafCount&quot;: {&quot;editor&quot;: &quot;int&quot;, &quot;default&quot;: 9, &quot;min&quot;: 0, &quot;max&quot;: 16, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Motion&quot;}}">
@@ -249,9 +250,6 @@ class Component extends DCLogic {
 
   componentDidMount() {
     this._onScroll = () => {
-      // parmakla sürükleme/momentum sırasında transform'u tek kaynak (touch) sürsün,
-      // scroll event'i araya girip çift güncelleme (titreme) yapmasın
-      if (this._touchDriving) return;
       if (this._raf) return;
       this._raf = requestAnimationFrame(() => { this._raf = null; this._apply(); });
     };
@@ -260,67 +258,6 @@ class Component extends DCLogic {
     document.body.addEventListener('scroll', this._onScroll, { passive: true });
     document.addEventListener('scroll', this._onScroll, { passive: true });
     window.addEventListener('resize', this._onResize);
-
-    this._touchStartX = null;
-    this._touchStartY = null;
-    this._touchStartScrollY = null;
-    this._touchMode = null;
-    this._velocityX = 0;
-    this._lastMoveX = null;
-    this._lastMoveTime = null;
-    this._momentumRaf = null;
-    this._onTouchStart = (e) => {
-      if (e.touches.length !== 1) return;
-      if (this._momentumRaf) { cancelAnimationFrame(this._momentumRaf); this._momentumRaf = null; }
-      const t = e.touches[0];
-      this._touchStartX = t.clientX;
-      this._touchStartY = t.clientY;
-      this._touchStartScrollY = this._touchDriving ? this._vy : this._getY();
-      this._vy = this._touchStartScrollY;
-      this._velocityX = 0;
-      this._lastMoveX = t.clientX;
-      this._lastMoveTime = performance.now();
-      this._touchMode = null;
-    };
-    this._onTouchMove = (e) => {
-      if (this._touchStartX == null) return;
-      const t = e.touches[0];
-      const dx = t.clientX - this._touchStartX;
-      const dy = t.clientY - this._touchStartY;
-      if (this._touchMode == null) {
-        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-        // yatay niyeti öne çıkar: eşit veya hafif dikey ağırlıklı hareketlerde bile yatay say
-        this._touchMode = Math.abs(dx) >= Math.abs(dy) * 0.7 ? 'horizontal' : 'vertical';
-      }
-      if (this._touchMode === 'horizontal') {
-        if (e.cancelable) e.preventDefault();
-        const now = performance.now();
-        const dt = now - (this._lastMoveTime || now);
-        if (dt > 0) this._velocityX = (t.clientX - this._lastMoveX) / dt;
-        this._lastMoveX = t.clientX;
-        this._lastMoveTime = now;
-        // sürükleme boyunca native scroll'a hiç dokunma: transform'u tek kaynaktan,
-        // sanal pozisyonla sür — çift güncelleme/titreme olmasın
-        this._touchDriving = true;
-        this._vy = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
-        this._apply(this._vy);
-      } else if (this._touchMode === 'vertical' && this._mq && this._mq.matches) {
-        // mobilde dikey touch tarayıcı barlarını tetikliyor; sadece yatay swipe kalsın
-        if (e.cancelable) e.preventDefault();
-      }
-    };
-    this._onTouchEnd = () => {
-      // serbest kaydırma: parmak kalkınca son hızla devam edip yavaşça yavaşlasın
-      if (this._touchMode === 'horizontal') this._startMomentum();
-      else if (this._touchDriving) this._endTouchDrive();
-      this._touchStartX = null;
-      this._touchStartY = null;
-      this._touchMode = null;
-    };
-    window.addEventListener('touchstart', this._onTouchStart, { passive: true });
-    window.addEventListener('touchmove', this._onTouchMove, { passive: false });
-    window.addEventListener('touchend', this._onTouchEnd, { passive: true });
-    window.addEventListener('touchcancel', this._onTouchEnd, { passive: true });
 
     this._mq = window.matchMedia('(max-width: 900px)');
     this._mqCb = () => this.setState({ isMobile: this._mq.matches });
@@ -340,23 +277,13 @@ class Component extends DCLogic {
     document.body.removeEventListener('scroll', this._onScroll);
     document.removeEventListener('scroll', this._onScroll);
     window.removeEventListener('resize', this._onResize);
-    window.removeEventListener('touchstart', this._onTouchStart);
-    window.removeEventListener('touchmove', this._onTouchMove);
-    window.removeEventListener('touchend', this._onTouchEnd);
-    window.removeEventListener('touchcancel', this._onTouchEnd);
     if (this._mq) this._mq.removeEventListener('change', this._mqCb);
     (this._timers || []).forEach(clearTimeout);
     if (this._ro) this._ro.disconnect();
     if (this._raf) cancelAnimationFrame(this._raf);
-    if (this._momentumRaf) cancelAnimationFrame(this._momentumRaf);
   }
 
   _layout() {
-    if (!this._track || !this._spacer) return;
-    const total = this._track.scrollWidth;
-    const max = Math.max(0, total - window.innerWidth);
-    this._max = max;
-    this._spacer.style.height = (max + window.innerHeight) + 'px';
     this._apply();
   }
 
@@ -373,59 +300,18 @@ class Component extends DCLogic {
     }
   }
 
-  _scrollToImmediate(top) {
-    if (document.body.scrollHeight > document.documentElement.scrollHeight) {
-      document.body.scrollTo(0, top);
-    } else {
-      window.scrollTo(0, top);
-    }
-  }
-
-  _startMomentum() {
-    let velocity = this._velocityX; // px/ms, parmağın son anlık hızı
-    const friction = 0.94;
-    const step = () => {
-      const atEdge = this._vy <= 0 || this._vy >= (this._max || 0);
-      if (Math.abs(velocity) < 0.02 || atEdge) {
-        this._momentumRaf = null;
-        this._endTouchDrive();
-        return;
-      }
-      this._vy = Math.max(0, Math.min(this._vy - velocity * 16, this._max || 0));
-      this._apply(this._vy);
-      velocity *= friction;
-      this._momentumRaf = requestAnimationFrame(step);
-    };
-    this._momentumRaf = requestAnimationFrame(step);
-  }
-
-  _endTouchDrive() {
-    // sanal sürüşü bitir: native scroll'u tek seferde sanal pozisyona eşitle,
-    // sonra en yakın karta yumuşakça hizalan
-    const y = Math.max(0, Math.min(this._vy || 0, this._max || 0));
-    this._scrollToImmediate(y);
-    this._touchDriving = false;
-    let best = null, bestDist = Infinity;
-    for (const id in this._sections) {
-      const el = this._sections[id];
-      if (!el) continue;
-      const d = Math.abs(el.offsetLeft - y);
-      if (d < bestDist) { bestDist = d; best = el; }
-    }
-    if (best && bestDist > 2) this._scrollTo(best.offsetLeft);
-  }
-
-  _apply(overrideY) {
-    const y = Math.max(0, Math.min(overrideY != null ? overrideY : this._getY(), this._max || 0));
-    if (this._track) this._track.style.transform = 'translate3d(' + (-y) + 'px,0,0)';
+  _apply() {
+    const y = this._getY();
+    // dikey kaydırdıkça panoramik arka plan yatayda süzülsün (parallax)
     const par = this.props.parallax ?? 0.35;
     if (this._bg) this._bg.style.backgroundPosition = (-y * par) + 'px 0';
-    // active dot
+    // aktif nokta: ekran ortasına en yakın bölüm
+    const mid = y + window.innerHeight / 2;
     let active = null, best = Infinity;
     for (const id in this._sections) {
       const el = this._sections[id];
       if (!el) continue;
-      const d = Math.abs(el.offsetLeft - y);
+      const d = Math.abs(el.offsetTop + el.offsetHeight / 2 - mid);
       if (d < best) { best = d; active = id; }
     }
     for (const id in this._dots) {
@@ -531,7 +417,6 @@ class Component extends DCLogic {
       trackRef: (el) => { this._track = el; },
       bgRef: (el) => { this._bg = el; },
       tintRef: (el) => { this._tint = el; },
-      spacerRef: (el) => { this._spacer = el; },
       regSection: (el) => { if (el) this._sections[el.getAttribute('data-section')] = el; },
       regDot: (el) => { if (el) this._dots[el.getAttribute('data-dot')] = el; },
       toggleLang: () => this.setState(s => ({ lang: s.lang === 'en' ? 'tr' : 'en' })),
@@ -542,7 +427,7 @@ class Component extends DCLogic {
       navClick: (e) => {
         const id = e.currentTarget.getAttribute('data-target');
         const el = this._sections[id];
-        if (el) this._scrollTo(el.offsetLeft);
+        if (el) this._scrollTo(el.offsetTop);
         if (this.state.menuOpen) this.setState({ menuOpen: false });
       }
     };
