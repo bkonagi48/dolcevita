@@ -262,17 +262,20 @@ class Component extends DCLogic {
     this._touchStartY = null;
     this._touchStartScrollY = null;
     this._touchMode = null;
-    this._touchStartTime = 0;
-    this._lastDx = 0;
+    this._velocityX = 0;
+    this._lastMoveX = null;
+    this._lastMoveTime = null;
+    this._momentumRaf = null;
     this._onTouchStart = (e) => {
       if (e.touches.length !== 1) return;
+      if (this._momentumRaf) { cancelAnimationFrame(this._momentumRaf); this._momentumRaf = null; }
       const t = e.touches[0];
       this._touchStartX = t.clientX;
       this._touchStartY = t.clientY;
       this._touchStartScrollY = this._getY();
-      this._touchStartId = this._nearestSectionId(this._touchStartScrollY);
-      this._touchStartTime = performance.now();
-      this._lastDx = 0;
+      this._velocityX = 0;
+      this._lastMoveX = t.clientX;
+      this._lastMoveTime = performance.now();
       this._touchMode = null;
     };
     this._onTouchMove = (e) => {
@@ -287,7 +290,11 @@ class Component extends DCLogic {
       }
       if (this._touchMode === 'horizontal') {
         if (e.cancelable) e.preventDefault();
-        this._lastDx = dx;
+        const now = performance.now();
+        const dt = now - (this._lastMoveTime || now);
+        if (dt > 0) this._velocityX = (t.clientX - this._lastMoveX) / dt;
+        this._lastMoveX = t.clientX;
+        this._lastMoveTime = now;
         const target = Math.max(0, Math.min((this._touchStartScrollY || 0) - dx, this._max || 0));
         this._scrollToImmediate(target);
         this._apply(target);
@@ -297,16 +304,8 @@ class Component extends DCLogic {
       }
     };
     this._onTouchEnd = () => {
-      if (this._touchMode === 'horizontal') {
-        const elapsed = performance.now() - this._touchStartTime;
-        // hızlı/kısa fiske (flick): mesafe az olsa bile bir sonraki/önceki bölüme geç (Instagram tarzı)
-        const isFlick = elapsed < 380 && Math.abs(this._lastDx) > 18;
-        if (isFlick) {
-          this._snapToAdjacentSection(this._lastDx < 0 ? 1 : -1);
-        } else {
-          this._snapToNearestSection();
-        }
-      }
+      // serbest kaydırma: parmak kalkınca son hızla devam edip yavaşça yavaşlasın, bölüme kilitlenmesin
+      if (this._touchMode === 'horizontal') this._startMomentum();
       this._touchStartX = null;
       this._touchStartY = null;
       this._touchMode = null;
@@ -342,6 +341,7 @@ class Component extends DCLogic {
     (this._timers || []).forEach(clearTimeout);
     if (this._ro) this._ro.disconnect();
     if (this._raf) cancelAnimationFrame(this._raf);
+    if (this._momentumRaf) cancelAnimationFrame(this._momentumRaf);
   }
 
   _layout() {
@@ -374,38 +374,20 @@ class Component extends DCLogic {
     }
   }
 
-  _nearestSectionId(y) {
-    let active = null, best = Infinity;
-    for (const id in this._sections) {
-      const el = this._sections[id];
-      if (!el) continue;
-      const d = Math.abs(el.offsetLeft - y);
-      if (d < best) { best = d; active = id; }
-    }
-    return active;
-  }
-
-  _snapToNearestSection() {
-    const id = this._nearestSectionId(this._getY());
-    const el = id && this._sections[id];
-    if (el) this._scrollTo(el.offsetLeft);
-  }
-
-  _sortedSectionIds() {
-    return Object.keys(this._sections)
-      .filter((id) => this._sections[id])
-      .sort((a, b) => this._sections[a].offsetLeft - this._sections[b].offsetLeft);
-  }
-
-  _snapToAdjacentSection(dir) {
-    const ids = this._sortedSectionIds();
-    if (!ids.length) return;
-    let idx = ids.indexOf(this._touchStartId);
-    if (idx === -1) idx = ids.indexOf(this._nearestSectionId(this._touchStartScrollY || 0));
-    if (idx === -1) idx = 0;
-    idx = Math.max(0, Math.min(ids.length - 1, idx + dir));
-    const el = this._sections[ids[idx]];
-    if (el) this._scrollTo(el.offsetLeft);
+  _startMomentum() {
+    let velocity = this._velocityX; // px/ms, parmağın son anlık hızı
+    const friction = 0.94;
+    const step = () => {
+      if (Math.abs(velocity) < 0.02) { this._momentumRaf = null; return; }
+      const current = this._getY();
+      const next = Math.max(0, Math.min(current - velocity * 16, this._max || 0));
+      this._scrollToImmediate(next);
+      this._apply(next);
+      velocity *= friction;
+      if (next <= 0 || next >= (this._max || 0)) { this._momentumRaf = null; return; }
+      this._momentumRaf = requestAnimationFrame(step);
+    };
+    this._momentumRaf = requestAnimationFrame(step);
   }
 
   _apply(overrideY) {
